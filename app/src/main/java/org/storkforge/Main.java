@@ -3,32 +3,55 @@ package org.storkforge;
 import org.storkforge.CurrencyConverter;
 import org.storkforge.ConverterName;
 
-import java.util.*;
-import java.util.stream.*;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Scanner;
+import java.util.ServiceLoader;
 
 public class Main {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
+        // Ladda alla CurrencyConverter-implementationer via SPI
         ServiceLoader<CurrencyConverter> loader = ServiceLoader.load(CurrencyConverter.class);
-        List<CurrencyConverter> converters = new ArrayList<>();
-        List<String> names = new ArrayList<>();
 
+        // Skapa en map för att koppla konverterarnamn till implementationer
+        Map<String, CurrencyConverter> converterMap = new HashMap<>();
+
+        // Iterera igenom varje implementation och lagra den med namnet från annotationen
         for (CurrencyConverter converter : loader) {
-            converters.add(converter);
-            ConverterName annotation = converter.getClass().getAnnotation(ConverterName.class);
-            names.add(annotation != null ? annotation.value() : converter.getClass().getSimpleName());
+            ConverterName nameAnnotation = converter.getClass().getAnnotation(ConverterName.class);
+            if (nameAnnotation != null) {
+                converterMap.put(nameAnnotation.value(), converter);
+            }
         }
 
-        for (int i = 0; i < names.size(); i++) {
-            System.out.println((i + 1) + ". " + names.get(i));
+        // Om inga converters hittas, visa ett meddelande och avsluta
+        if (converterMap.isEmpty()) {
+            System.out.println("No currency converters found!");
+            return;
         }
 
+        // Visa alla tillgängliga converters till användaren
+        System.out.println("Choose Converter:");
+        for (String name : converterMap.keySet()) {
+            System.out.println("- " + name);
+        }
+
+        // Läs in användarens val
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Choose converter: ");
-        int choice = scanner.nextInt();
+        String choice = scanner.nextLine();
 
-        CurrencyConverter selected = converters.get(choice - 1);
-        System.out.print("Amount in SEK: ");
-        double amount = scanner.nextDouble();
-        System.out.println("Converted to " + selected.getTargetCurrency() + ": " + selected.convert(amount));
+        // Hämta rätt converter baserat på användarens val
+        CurrencyConverter chosen = converterMap.get(choice.toUpperCase());
+
+        // Kontrollera om användaren valt en giltig converter och utför konvertering
+        if (chosen != null) {
+            System.out.print("Enter amount in SEK: ");
+            double amount = scanner.nextDouble();
+            System.out.println(amount + " SEK = " + chosen.convert(amount) + " " + chosen.getTargetCurrency());
+
+        } else {
+            System.out.println("Invalid choice.");
+        }
     }
 }
+
