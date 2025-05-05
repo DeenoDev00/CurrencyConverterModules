@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
@@ -9,30 +7,70 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
+    <groupId>org.storkforge.CurrencyConverterModuless</groupId> <!-- Ändrat till ditt projektgrupp -->
+    <artifactId>currency-converter-app</artifactId> <!-- Detta kan vara samma eller ändras beroende på vad du vill kalla din JAR -->
+    <packaging>jar</packaging>
+
+    <name>currency-converter-app</name>
+    <url>http://maven.apache.org</url>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
     <dependencies>
+        <!-- Ditt API-beroende -->
         <dependency>
             <groupId>org.storkforge</groupId>
             <artifactId>api</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-        <dependency>
-            <groupId>org.storkforge</groupId>
-            <artifactId>impl-usd</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
+
+        <!-- USD till EUR implementation beroende -->
         <dependency>
             <groupId>org.storkforge</groupId>
             <artifactId>impl-eur</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+
+        <!-- USD till SEK implementation beroende -->
+        <dependency>
+            <groupId>org.storkforge</groupId>
+            <artifactId>impl-usd</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
     </dependencies>
 
-    <artifactId>app</artifactId>
-
-    <properties>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+    <build>
+        <plugins>
+            <!-- Maven Assembly Plugin för att skapa en fat JAR-fil -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <archive>
+                        <manifest>
+                            <!-- Ange rätt main class här -->
+                            <mainClass>org.storkforge.Main</mainClass> <!-- Ersätt med rätt huvudklass -->
+                        </manifest>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

@@ -18,6 +18,7 @@ public class Main {
 
         // Iterera igenom varje implementation och lagra den med namnet från annotationen
         for (CurrencyConverter converter : loader) {
+            System.out.println("Discovered: " + converter.getClass().getName()); // Lägg till denna rad
             ConverterName nameAnnotation = converter.getClass().getAnnotation(ConverterName.class);
             if (nameAnnotation != null) {
                 converterMap.put(nameAnnotation.value(), converter);
