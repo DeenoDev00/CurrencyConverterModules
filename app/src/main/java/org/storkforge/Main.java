@@ -25,6 +25,8 @@ public class Main {
             }
         }
 
+        //....
+
         // Om inga converters hittas, visa ett meddelande och avsluta
         if (converterMap.isEmpty()) {
             System.out.println("No currency converters found!");
